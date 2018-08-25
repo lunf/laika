@@ -98,16 +98,20 @@ public class Utils {
         BufferedImage img = new BufferedImage(viewPortDimension.width + 20, viewPortDimension.height + 20, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = img.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Fill border of view port with 10px padding
         g2d.setColor(Color.darkGray);
         g2d.fillRect(0, 0, viewPortDimension.width + 20, (int) viewPortDimension.height + 20);
         g2d.setColor(Color.WHITE);
         g2d.fillRect(10, 10, viewPortDimension.width, viewPortDimension.height);
+
+
         g2d.setColor(Color.BLACK);
         for (int i = 0; i < pieces.size(); i++) {
             pieces.get(i).drawInViewPort(binDimension, viewPortDimension, g2d);
         }
         File outputfile = new File(name + ".png");
-        img = flipAroundX(img);
+        //img = flipAroundX(img);
         ImageIO.write(img, "png", outputfile);
     }
 
@@ -178,48 +182,58 @@ public class Utils {
      * @return
      */
     private static Object[] readInput(Scanner scanner) {
-        Dimension binDimension = new Dimension(Constants.STANDARD_MAX_WIDTH, Constants.STANDARD_MAX_HEIGHT);
-        double x1 = binDimension.getWidth();
-        double y1 = binDimension.getHeight();
-        Dimension viewPortDimension;
-        if (x1 > y1) {
-            viewPortDimension = new Dimension(1500, (int) (1500 / (x1 / y1)));
-        } else {
-            viewPortDimension = new Dimension((int) (1500 / (y1 / x1)), 1500);
-        }
-        int N = scanner.nextInt();
+        Dimension binDimension = new Dimension(scanner.nextInt(), scanner.nextInt());
+        int totalPieces = scanner.nextInt();
         scanner.nextLine();
-        MArea[] pieces = new MArea[N];
+        
+        MArea[] pieces = new MArea[totalPieces];
         int n = 0;
-        while (n < N) {
+        while (n < totalPieces) {
             String s = scanner.nextLine();
             String[] src = s.split(",");
 
-            int width = Integer.valueOf(src[0]);
-            int height = Integer.valueOf(src[1]);
+            if (src.length != 2) {
+                continue;
+            }
+
+            double width = Double.valueOf(src[0]);
+            double height = Double.valueOf(src[1]);
 
             // Populate the points
-            MPointDouble topLeft = new
+            MPointDouble topLeft = new MPointDouble(0,0);
+            MPointDouble topRight = new MPointDouble(0, width);
+            MPointDouble bottomLeft = new MPointDouble(height, 0);
+            MPointDouble bottomRight = new MPointDouble(height, width);
 
-            ArrayList<MPointDouble> pointsArrayList = new ArrayList<MPointDouble>();
-            HashSet<MPointDouble> set = new HashSet<MPointDouble>();
-            for (int j = 0; j < src.length; j++) {
-                String[] point = src[j].split(",");
-                double x = Double.valueOf(point[0]);
-                double y = Double.valueOf(point[1]);
-                MPointDouble thisPoint = new MPointDouble(x, y);
-                if (!set.contains(thisPoint)) {
-                    pointsArrayList.add(thisPoint);
-                    set.add(thisPoint);
-                }
-            }
+            ArrayList<MPointDouble> pointsArrayList = new ArrayList<>();
+
+
+            pointsArrayList.add(topLeft);
+            pointsArrayList.add(bottomLeft);
+            pointsArrayList.add(bottomRight);
+            pointsArrayList.add(topRight);
+
             pieces[n] = new MArea(pointsArrayList.toArray(new MPointDouble[0]), n + 1);
             ++n;
 
         }
         scanner.close();
-        Object[] result = {binDimension, viewPortDimension, pieces};
+        Object[] result = {binDimension, pieces};
         return result;
+    }
+
+    public static Dimension getViewportDimension(Dimension binDimension) {
+        double x1 = binDimension.getWidth();
+        double y1 = binDimension.getHeight();
+        Dimension viewPortDimension;
+        if (x1 > y1) {
+            //viewPortDimension = new Dimension(1800, (int) (1800 / (x1 / y1)));
+            viewPortDimension = new Dimension(2400, 1200);
+        } else {
+            viewPortDimension = new Dimension(1200, 2400);
+        }
+
+        return viewPortDimension;
     }
 
 }

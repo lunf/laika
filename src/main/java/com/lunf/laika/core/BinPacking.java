@@ -13,10 +13,10 @@ public class BinPacking {
      *
      * @param pieces            pieces to be nested inside the bins.
      * @param binDimension      dimensions for the generated bins.
-     * @param viewPortDimension dimensions of the view port for the bin images generation
+     *
      * @return list of generated bins.
      */
-    public static Bin[] BinPackingStrategy(MArea[] pieces, Dimension binDimension, Dimension viewPortDimension) {
+    public static Bin[] BinPackingStrategy(MArea[] pieces, Dimension binDimension) {
         System.out.println(".............Started computation of bin placements.............");
         ArrayList<Bin> bins = new ArrayList<Bin>();
         int nbin = 0;
@@ -40,7 +40,7 @@ public class BinPacking {
         double t2 = System.currentTimeMillis();
         System.out.println();
         System.out.println("Number of used bins: " + nbin);
-        System.out.println("Computation time:" + ((t2 - t1) / 1000) / 60 + " minutes");
+        System.out.println("Computation time:" + ((t2 - t1) / 1000) + " seconds");
         System.out.println();
         return bins.toArray(new Bin[0]);
     }

@@ -43,10 +43,19 @@ public class LaikaApplication {
 		Object[] result = Utils.loadPieces(reader);
 
 		Dimension binDimension = (Dimension) result[0];
-		Dimension viewPortDimension = (Dimension) result[1];
-		MArea[] pieces = (MArea[]) result[2];
+		MArea[] pieces = (MArea[]) result[1];
 
-		Bin[] bins = BinPacking.BinPackingStrategy(pieces, binDimension, viewPortDimension);
+        System.out.println("Piece " + pieces.length);
+
+
+		if (pieces == null || pieces.length < 1) {
+			System.out.println("NO Pieces for Bin");
+			return;
+		}
+
+		Bin[] bins = BinPacking.BinPackingStrategy(pieces, binDimension);
+
+		Dimension viewPortDimension = Utils.getViewportDimension(binDimension);
 		System.out.println("Generating bin images.........................");
 		drawbinToFile(bins, viewPortDimension);
 		System.out.println();

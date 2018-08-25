@@ -3,6 +3,7 @@ package com.lunf.laika.primitives;
 import com.lunf.laika.Utils.Utils;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
 import java.awt.geom.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -243,8 +244,45 @@ public class MArea extends Area {
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
         g2d.draw(newArea);
+
         g2d.setColor(Color.LIGHT_GRAY);
         g2d.fill(newArea);
+
+
+        // Write dimension
+        g2d.setPaint(Color.BLACK);
+        Font font = new Font("Serif", Font.PLAIN, 12);
+
+        String label = String.format("w:%.0f x h:%.0f", this.getBoundingBox().getWidth() , this.getBoundingBox().getHeight());
+        System.out.println(label);
+        System.out.println(this.getBoundingBox().getLocation().x + ":" + this.getBoundingBox().getLocation().y);
+
+
+
+
+        FontRenderContext frc =
+                new FontRenderContext(null, true, true);
+
+        FontMetrics fm = g2d.getFontMetrics();
+
+        Rectangle2D r2D = font.getStringBounds(label, frc);
+        int rWidth = (int) Math.round(r2D.getWidth());
+        int rHeight = (int) Math.round(r2D.getHeight());
+        int rX = (int) Math.round(r2D.getX());
+        int rY = (int) Math.round(r2D.getY());
+
+        int a = Double.valueOf(this.getBoundingBox().getWidth() / 2).intValue() - (rWidth / 2) - rX;
+        int b = Double.valueOf(this.getBoundingBox().getHeight() / 2).intValue() - (rHeight / 2) - rY;
+
+        System.out.println(a + ":" + rWidth + ":" + rX);
+
+        int labelX = this.getBoundingBox().getLocation().x + a;
+        int labelY = this.getBoundingBox().getLocation().y + b;
+
+        System.out.println(labelX + " : " + labelY );
+
+        g2d.setFont(font);
+        g2d.drawString(label, labelX, labelY);
     }
 
     /**
